@@ -4,68 +4,67 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
+public enum ForceDirection
+{
+    Push = 1, Pull = -1, Off = 0
+}
+
 public class ApplyForceDrone : MonoBehaviour
 {
-    [SerializeField] private float forcePushback;
+    [SerializeField] private float force;
     [SerializeField] private float radius;
+    [SerializeField] private float distanceForceMultiplier;
+
+    private RaycastHit[] hits;
+
+    private ForceDirection forceDirection;
 
     public void Push(InputAction.CallbackContext cb)
     {
         if (cb.started)
         {
-            var hits = Physics.SphereCastAll(transform.position, radius, Vector3.up);
-
-            foreach (var hit in hits)
-            {
-                Rigidbody rb3d = hit.collider.GetComponent<Rigidbody>();
-                Rigidbody2D rb = hit.collider.GetComponent<Rigidbody2D>();
-
-                if (rb3d != null)
-                {
-                    Vector3 dir = hit.transform.position - transform.position;
-
-                    dir = dir.normalized;
-
-                    rb3d.AddForce(dir * forcePushback, ForceMode.Impulse);
-                }
-                if (rb != null)
-                {
-                    Vector3 dir = hit.transform.position - transform.position;
-
-                    dir = dir.normalized;
-
-                    rb.AddForce(dir * forcePushback, ForceMode2D.Impulse);
-                }
-            }
+            forceDirection = ForceDirection.Push;
         }
+        else if (cb.canceled)
+            if (forceDirection == ForceDirection.Push)
+            {
+                forceDirection = ForceDirection.Off;
+            }
     }
 
     public void Pull(InputAction.CallbackContext cb)
     {
         if (cb.started)
         {
-            var hits = Physics.SphereCastAll(transform.position, radius, Vector3.up);
+            forceDirection = ForceDirection.Pull;
+        }
+        else if (cb.canceled)
+            if (forceDirection == ForceDirection.Pull)
+            {
+                forceDirection = ForceDirection.Off;
+            }
+    }
+
+    private void FixedUpdate()
+    {
+        if (forceDirection != ForceDirection.Off)
+        {
+            hits = Physics.SphereCastAll(transform.position, radius, Vector3.up);
 
             foreach (var hit in hits)
             {
-                Rigidbody rb3d = hit.collider.GetComponent<Rigidbody>();
-                Rigidbody2D rb = hit.collider.GetComponent<Rigidbody2D>();
+                Rigidbody rb = hit.collider.GetComponent<Rigidbody>();
 
-                if (rb3d != null)
-                {
-                    Vector3 dir = hit.transform.position - transform.position;
-
-                    dir = dir.normalized;
-
-                    rb3d.AddForce(dir * -forcePushback, ForceMode.Impulse);
-                }
                 if (rb != null)
                 {
                     Vector3 dir = hit.transform.position - transform.position;
 
+                    float distanceMult = Mathf.Clamp01(dir.magnitude / distanceForceMultiplier);
                     dir = dir.normalized;
 
-                    rb.AddForce(dir * -forcePushback, ForceMode2D.Impulse);
+                    Vector3 finalForce = dir * (force * distanceMult) * (int)forceDirection;
+
+                    rb.AddForce(finalForce, ForceMode.Impulse);
                 }
             }
         }
@@ -75,5 +74,7 @@ public class ApplyForceDrone : MonoBehaviour
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, radius);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, distanceForceMultiplier);
     }
 }
