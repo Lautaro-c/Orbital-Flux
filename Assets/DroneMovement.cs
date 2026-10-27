@@ -5,9 +5,12 @@ using UnityEngine.InputSystem;
 
 public class DroneMovement : MonoBehaviour
 {
-    [SerializeField] private float speed;
+    [Header("Seguimiento del mouse")]
+    [SerializeField] private float maxSpeed = 10f;
+    [SerializeField] private float followGain = 5f;
+    [SerializeField] private float maxAcceleration = 60f;
+
     private Rigidbody rb;
-    [SerializeField] private float distanceMultiplier;
 
     private Vector3 mousePos;
 
@@ -25,12 +28,12 @@ public class DroneMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector2 dir = Vector2.zero;
-
-        dir = (mousePos - transform.position).normalized;
-        float distanceMult = Mathf.Clamp01(dir.magnitude / distanceMultiplier);
-
-
-        rb.AddForce(dir * speed * Time.fixedDeltaTime * distanceMult, ForceMode.Impulse);
+        Vector3 toMouse = mousePos - transform.position;
+        toMouse.z = 0f;
+        Vector3 desiredVelocity = Vector3.ClampMagnitude(toMouse * followGain, maxSpeed);
+        Vector3 velocityError = desiredVelocity - rb.velocity;
+        Vector3 acceleration = velocityError / Time.fixedDeltaTime;
+        acceleration = Vector3.ClampMagnitude(acceleration, maxAcceleration);
+        rb.AddForce(acceleration, ForceMode.Acceleration);
     }
 }

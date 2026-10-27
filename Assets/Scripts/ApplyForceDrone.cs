@@ -14,6 +14,7 @@ public class ApplyForceDrone : MonoBehaviour
     [SerializeField] private float force;
     [SerializeField] private float radius;
     [SerializeField] private float distanceForceMultiplier;
+    [SerializeField] private ForceStrengthController strength;
 
     private RaycastHit[] hits;
 
@@ -23,32 +24,44 @@ public class ApplyForceDrone : MonoBehaviour
     {
         if (cb.started)
         {
+            if (IsPointerOverUI()) return;
             forceDirection = ForceDirection.Push;
         }
         else if (cb.canceled)
+        {
             if (forceDirection == ForceDirection.Push)
             {
                 forceDirection = ForceDirection.Off;
             }
+        }
     }
 
     public void Pull(InputAction.CallbackContext cb)
     {
         if (cb.started)
         {
+            if (IsPointerOverUI()) return;
             forceDirection = ForceDirection.Pull;
         }
         else if (cb.canceled)
+        {
             if (forceDirection == ForceDirection.Pull)
             {
                 forceDirection = ForceDirection.Off;
             }
+        }
     }
 
     private void FixedUpdate()
     {
         if (forceDirection != ForceDirection.Off)
         {
+            float strengthMult = 1f;
+            if (strength != null)
+            {
+                strengthMult = strength.GetForceMultiplier(forceDirection);
+            }
+
             hits = Physics.SphereCastAll(transform.position, radius, Vector3.up);
 
             foreach (var hit in hits)
@@ -62,12 +75,19 @@ public class ApplyForceDrone : MonoBehaviour
                     float distanceMult = Mathf.Clamp01(dir.magnitude / distanceForceMultiplier);
                     dir = dir.normalized;
 
-                    Vector3 finalForce = dir * (force * distanceMult) * (int)forceDirection;
+                    Vector3 finalForce = dir * (force * distanceMult * strengthMult) * (int)forceDirection; // NUEVO: * strengthMult
 
                     rb.AddForce(finalForce, ForceMode.Impulse);
                 }
             }
         }
+    }
+
+    // NUEVO: evita activar la fuerza al hacer click sobre los botones de la UI
+    private bool IsPointerOverUI()
+    {
+        UnityEngine.EventSystems.EventSystem eventSystem = UnityEngine.EventSystems.EventSystem.current;
+        return eventSystem != null && eventSystem.IsPointerOverGameObject();
     }
 
     private void OnDrawGizmosSelected()
