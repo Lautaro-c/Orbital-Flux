@@ -20,18 +20,35 @@ public class ApplyForceDrone : MonoBehaviour
 
     private ForceDirection forceDirection;
 
+
+    [Header("Visuals")]
+    [SerializeField] private GameObject pullParticles;
+    [SerializeField] private ParticleSystem pullParticleSystem;
+    [SerializeField] private ParticleSystem pushParticleSystem;
+    [SerializeField] private Animator droneAnimator;
+
     public void Push(InputAction.CallbackContext cb)
     {
         if (cb.started)
         {
             if (IsPointerOverUI()) return;
             forceDirection = ForceDirection.Push;
+            droneAnimator.SetTrigger("Push");
+
+            if (pullParticles.activeSelf)
+            {
+                pullParticles.SetActive(false);
+                pullParticleSystem.Stop();
+            }
+            pushParticleSystem.Play();
         }
         else if (cb.canceled)
         {
             if (forceDirection == ForceDirection.Push)
             {
                 forceDirection = ForceDirection.Off;
+                droneAnimator.SetTrigger("Off");
+                pushParticleSystem.Stop();
             }
         }
     }
@@ -42,12 +59,23 @@ public class ApplyForceDrone : MonoBehaviour
         {
             if (IsPointerOverUI()) return;
             forceDirection = ForceDirection.Pull;
+            droneAnimator.SetTrigger("Pull");
+
+            //Start Particles
+            pullParticles.SetActive(true);
+            pullParticleSystem.Play();
+            pushParticleSystem.Stop();
         }
         else if (cb.canceled)
         {
             if (forceDirection == ForceDirection.Pull)
             {
                 forceDirection = ForceDirection.Off;
+                droneAnimator.SetTrigger("Off");
+
+                //Stop Particles
+                if (pullParticles.activeSelf) pullParticles.SetActive(false);
+                pullParticleSystem.Stop();
             }
         }
     }
