@@ -66,6 +66,8 @@ public class ForceStrengthController : MonoBehaviour
     {
         if (!cb.performed) return;
 
+        if (Mathf.Approximately(Time.timeScale, 0f)) return;
+
         float y = cb.ReadValue<Vector2>().y;
         if (Mathf.Approximately(y, 0f)) return;
 

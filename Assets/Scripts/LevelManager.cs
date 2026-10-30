@@ -29,6 +29,8 @@ public class LevelManager : MonoBehaviour
 
     public float ElapsedTime => elapsed;
 
+    public bool IsRunning => running;
+
     private void Awake()
     {
         Instance = this;
@@ -134,7 +136,7 @@ public class LevelManager : MonoBehaviour
 
     public void RetryLevel()
     {
-        Load(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void NextLevel()
