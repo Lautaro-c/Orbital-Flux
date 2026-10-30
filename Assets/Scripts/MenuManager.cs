@@ -20,11 +20,13 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject audioAndVideoPanel;
     [SerializeField] private GameObject controlsPanel;
+    [SerializeField] private GameObject creditsPanel;
 
     [Header("Menu principal")]
     [SerializeField] private Button playButton;
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button exitButton;
+    [SerializeField] private Button creditsButton;
 
     [Header("Selector de niveles")]
     [SerializeField] private LevelEntry[] levels = new LevelEntry[5];
@@ -59,6 +61,8 @@ public class MenuManager : MonoBehaviour
 
         Connect(audioAndVideoBackButton, () => ShowPanel(settingsPanel));
         Connect(controlsBackButton, () => ShowPanel(settingsPanel));
+
+        Connect(creditsButton, () => ShowPanel(creditsPanel));
 
         foreach (LevelEntry level in levels)
         {
@@ -98,6 +102,7 @@ public class MenuManager : MonoBehaviour
         SetPanel(settingsPanel, target);
         SetPanel(audioAndVideoPanel, target);
         SetPanel(controlsPanel, target);
+        SetPanel(creditsPanel, target);
     }
 
     private void SetPanel(GameObject panel, GameObject target)
