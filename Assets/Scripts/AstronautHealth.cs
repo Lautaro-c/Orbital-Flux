@@ -37,6 +37,7 @@ public class AstronautHealth : MonoBehaviour
 
     private bool CanTakeDamage => !IsDead && !forcedInvulnerable && Time.time >= invulnerableUntil;
 
+    [SerializeField] private SpriteRenderer hpBar;
 
     private void Awake()
     {
@@ -93,6 +94,8 @@ public class AstronautHealth : MonoBehaviour
         integrity = Mathf.Max(0f, integrity - damage);
         OnIntegrityChanged?.Invoke(IntegrityPercent);
         percentText.text = "Integrity: " + IntegrityPercent.ToString("F2") + "%";
+
+        hpBar.size = new Vector2(IntegrityPercent/100f, hpBar.size.y);
 
         if (IsDead) OnDied?.Invoke(this);
     }
