@@ -15,11 +15,11 @@ public class ForceSelectorUI : MonoBehaviour
     [SerializeField] private Image pullFill;
     [SerializeField] private GameObject pullSelectedMarker;
 
-    private void Awake()
+    /*private void Awake()
     {
         pushButton.onClick.AddListener(controller.SelectPush);
         pullButton.onClick.AddListener(controller.SelectPull);
-    }
+    }*/
 
     private void OnEnable()
     {
@@ -38,10 +38,10 @@ public class ForceSelectorUI : MonoBehaviour
 
     private void Refresh()
     {
-        pushFill.fillAmount = controller.PushStrength;
-        pullFill.fillAmount = controller.PullStrength;
+        pushFill.fillAmount = controller.Strenght;
+        //pullFill.fillAmount = controller.PullStrength;
 
-        pushSelectedMarker.SetActive(controller.Selected == ForceDirection.Push);
-        pullSelectedMarker.SetActive(controller.Selected == ForceDirection.Pull);
+        /*pushSelectedMarker.SetActive(controller.Selected == ForceDirection.Push);
+        pullSelectedMarker.SetActive(controller.Selected == ForceDirection.Pull);*/
     }
 }

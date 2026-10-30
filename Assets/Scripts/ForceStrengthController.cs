@@ -12,17 +12,16 @@ public class ForceStrengthController : MonoBehaviour
     [Header("Efecto real de la potencia")]
     [SerializeField, Min(1f)] private float responseExponent = 2f;
 
-    public float PushStrength { get; private set; } = 1f;
-    public float PullStrength { get; private set; } = 1f;
+    public float Strenght { get; private set; } = 1f;
 
-    public ForceDirection Selected { get; private set; } = ForceDirection.Push;
+    //public ForceDirection Selected { get; private set; } = ForceDirection.Push;
 
     public event Action OnChanged;
 
     private void Awake()
     {
-        PushStrength = SaveManager.PushStrength;
-        PullStrength = SaveManager.PullStrength;
+        Strenght = SaveManager.PushStrength;
+        //PullStrength = SaveManager.PullStrength;
     }
 
     private void OnDestroy()
@@ -30,7 +29,7 @@ public class ForceStrengthController : MonoBehaviour
         SaveManager.Save();
     }
 
-    public float GetStrength(ForceDirection direction)
+    /*public float GetStrength(ForceDirection direction)
     {
         switch (direction)
         {
@@ -38,15 +37,16 @@ public class ForceStrengthController : MonoBehaviour
             case ForceDirection.Pull: return PullStrength;
             default: return 0f;
         }
-    }
+    }*/
 
     public float GetForceMultiplier(ForceDirection direction)
     {
-        float value = GetStrength(direction);
-        return Mathf.Pow(value, responseExponent);
+        //float value = GetStrength(direction);
+        if (direction == ForceDirection.Off) return 0f;
+        return Mathf.Pow(direction == ForceDirection.Pull ? -Strenght : Strenght, responseExponent);
     }
 
-    public void SelectPush()
+    /*public void SelectPush()
     {
         Select(ForceDirection.Push);
     }
@@ -60,7 +60,7 @@ public class ForceStrengthController : MonoBehaviour
         if (direction == ForceDirection.Off || direction == Selected) return;
         Selected = direction;
         OnChanged?.Invoke();
-    }
+    }*/
 
     public void OnScroll(InputAction.CallbackContext cb)
     {
@@ -82,11 +82,11 @@ public class ForceStrengthController : MonoBehaviour
 
     private void Adjust(float delta)
     {
-        float current = GetStrength(Selected);
-        float next = Mathf.Clamp(current + delta, minStrength, 1f);
-        if (Mathf.Approximately(next, current)) return;
+        //float current = GetStrength(Selected);
+        float next = Mathf.Clamp(Strenght + delta, minStrength, 1f);
+        if (Mathf.Approximately(next, Strenght)) return;
 
-        if (Selected == ForceDirection.Push)
+        /*if (Selected == ForceDirection.Push)
         {
             PushStrength = next;
             SaveManager.PushStrength = next;
@@ -95,7 +95,9 @@ public class ForceStrengthController : MonoBehaviour
         {
             PullStrength = next;
             SaveManager.PullStrength = next;
-        }
+        }*/
+        Strenght = next;
+        SaveManager.PushStrength = next;
 
         OnChanged?.Invoke();
     }
