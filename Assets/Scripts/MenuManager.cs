@@ -16,7 +16,6 @@ public class MenuManager : MonoBehaviour
     }
 
     [Header("Paneles")]
-    [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject levelsPanel;
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject audioAndVideoPanel;
@@ -55,11 +54,8 @@ public class MenuManager : MonoBehaviour
         Connect(settingsButton, () => ShowPanel(settingsPanel));
         Connect(exitButton, ExitGame);
 
-        Connect(levelsBackButton, () => ShowPanel(mainPanel));
-
         Connect(audioAndVideoButton, OpenAudioAndVideo);
         Connect(controlsButton, () => ShowPanel(controlsPanel));
-        Connect(settingsBackButton, () => ShowPanel(mainPanel));
 
         Connect(audioAndVideoBackButton, () => ShowPanel(settingsPanel));
         Connect(controlsBackButton, () => ShowPanel(settingsPanel));
@@ -79,8 +75,6 @@ public class MenuManager : MonoBehaviour
             fullscreenToggle.SetIsOnWithoutNotify(Screen.fullScreen);
             fullscreenToggle.onValueChanged.AddListener(SetFullscreen);
         }
-
-        ShowPanel(mainPanel);
     }
 
     private void Connect(Button button, UnityAction action)
@@ -100,7 +94,6 @@ public class MenuManager : MonoBehaviour
             return;
         }
 
-        SetPanel(mainPanel, target);
         SetPanel(levelsPanel, target);
         SetPanel(settingsPanel, target);
         SetPanel(audioAndVideoPanel, target);
