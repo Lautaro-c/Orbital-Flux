@@ -130,7 +130,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      tile orvitum flux_0: -244893883895587554
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

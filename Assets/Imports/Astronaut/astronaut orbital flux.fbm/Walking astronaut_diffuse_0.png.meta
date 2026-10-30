@@ -130,7 +130,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Walking astronaut_diffuse_0_0: 4168738509898530735
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

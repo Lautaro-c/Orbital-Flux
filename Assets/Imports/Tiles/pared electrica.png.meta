@@ -154,7 +154,9 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      pared electrica_0: -5042162616058080211
+      pared electrica_1: 6655764032143617481
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

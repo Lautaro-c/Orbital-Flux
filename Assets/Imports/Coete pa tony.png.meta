@@ -130,7 +130,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Coete pa tony_0: -4677029441325825092
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
